@@ -1,14 +1,67 @@
 const express = require('express')
 var cors = require('cors')
 const app = express()
-const port = 3000
+const port = 80
+const mysql = require('mysql')
+
+const connection = mysql.createConnection({
+    host: '',
+    user: '',
+    password: '',
+    database: ''
+});
 
 app.use(cors())
 
 
 app.get('/', function (req, res) {
-    res.send('Hello World')
+    res.send('homepage')
 })
+
+app.get('/user', function (req, res) {
+    res.send('유저')
+})
+
+app.get('/facility', function (req, res) {
+    res.send('시설')
+})
+
+app.get('/patients', function (req, res) {
+    res.send('환자')
+})
+
+app.get('/emergency', function (req, res) {
+    res.send('응급상황')
+})
+
+app.get('/medicine', function (req, res) {
+    res.send('약')
+})
+
+app.get('/treatment', function (req, res) {
+    res.send('복용')
+})
+
+app.get('/robot', function (req, res) {
+    res.send('로봇')
+})
+
+app.get('/robotlog', function (req, res) {
+    res.send('로봇기록')
+})
+
+app.get('/map', function (req, res) {
+    res.send('지도')
+})
+
+app.get('/location', function (req, res) {
+    res.send('건물')
+})
+
+app.get('/itemlocation', function (req, res) {
+    res.send('_')
+})
+
 
 app.get('/sound/:name', function (req, res) {
     const { name } = req.params
@@ -23,12 +76,6 @@ app.get('/sound/:name', function (req, res) {
         res.json({"sound" : "empty"})
     }
     
-})
-
-app.get('/user', function (req, res) {
-
-
-  res.send('editting')
 })
 
 app.listen(80)
