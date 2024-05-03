@@ -28,7 +28,7 @@ app.get('/sound/:name', function (req, res) {
 app.get('/user', function (req, res) {
 
 
-  res.send('username')
+  res.send('user')
 })
 
 app.listen(80)
