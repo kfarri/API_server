@@ -13,6 +13,12 @@ const connection = mysql.createConnection({
 
 app.use(cors())
 
+// 선택, 수정, 삭제 쿼리별 분류해야 함
+// ex)
+// select/user
+// select/userjfacility 조인
+// update/patients 
+// delete/user
 
 app.get('/', function (req, res) {
     res.send('homepage')
