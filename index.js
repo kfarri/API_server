@@ -3,15 +3,11 @@ var cors = require('cors')
 const app = express()
 const port = 80
 const mysql = require('mysql')
-
-const connection = mysql.createConnection({
-    host: '',
-    user: '',
-    password: '',
-    database: ''
-});
-
+const dbconfig   = require('./config/dbconf.js');
+const connection = mysql.createConnection(dbconfig);
 app.use(cors())
+
+connection.connect();
 
 // 선택, 수정, 삭제 쿼리별 분류해야 함
 // ex)
@@ -25,11 +21,19 @@ app.get('/', function (req, res) {
 })
 
 app.get('/user', function (req, res) {
-    res.send('유저')
+    connection.query('SELECT * from user', (error, rows) => {
+        if (error) throw error;
+        console.log('User info is: ', rows);
+        res.send(rows);
+    });
 })
 
 app.get('/facility', function (req, res) {
-    res.send('시설')
+    connection.query('SELECT * from facility', (error, rows) => {
+        if (error) throw error;
+        console.log('User info is: ', rows);
+        res.send(rows);
+    });
 })
 
 app.get('/patients', function (req, res) {
@@ -71,7 +75,7 @@ app.get('/itemlocation', function (req, res) {
 
 app.get('/sound/:name', function (req, res) {
     const { name } = req.params
-
+    
     if(name == "dog"){
         res.json({'sound' : 'mung'})
     } else if(name == "cat"){
@@ -83,5 +87,4 @@ app.get('/sound/:name', function (req, res) {
     }
     
 })
-
 app.listen(80)
