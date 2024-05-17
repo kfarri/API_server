@@ -6,6 +6,7 @@ const mysql = require('mysql')
 const dbconfig   = require('./config/dbconf.js');
 const connection = mysql.createConnection(dbconfig);
 app.use(cors())
+const admin = require('firebase-admin');
 
 connection.connect();
 
@@ -20,15 +21,10 @@ app.get('/', function (req, res) {
     res.send('homepage')
 })
 
-app.get('/user', function (req, res) {
-    connection.query('SELECT * from user', (error, rows) => {
-        if (error) throw error;
-        console.log('User info is: ', rows);
-        res.send(rows);
-    });
-})
+const select = require('./routes/select');
+app.use('/select', select);
 
-app.get('/facility', function (req, res) {
+app.get('/select/facility', function (req, res) {
     connection.query('SELECT * from facility', (error, rows) => {
         if (error) throw error;
         console.log('User info is: ', rows);
@@ -72,8 +68,38 @@ app.get('/itemlocation', function (req, res) {
     res.send('_')
 })
 
+const serviceAccount = require('./config/carebot_Firebase_key.json');
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount)
+});
 
-app.get('/sound/:name', function (req, res) {
+app.get('/send-fcm-message', (req, res) => {
+    //const { token, title, body } = req.body;
+  
+    //if (!token || !title || !body) {
+    //  return res.status(400).send('Missing parameters');
+    //}
+  
+    const message = {
+      notification: {
+        title: 'nodeJS',
+        body: 'FCM test'
+      },
+      token: 'd8QJA0d3R5iiJp0Qh4a6Mk:APA91bHtuH2bEpt6HHyaJSv6FdM4qvr-a-dN9NBztcUya6qtw6DI6XYU2Lu_QMDNCVPf0GGQAusZx35KOhta8w3QuE3ZysF7g_ZrUhmqwSu0Nbz_0cOi8DuQ446G8s4zYVcNqToxHfzn'
+    };
+  
+    admin.messaging().send(message)
+      .then((response) => {
+        console.log('Successfully sent message:', response);
+        res.status(200).send('Message sent successfully');
+      })
+      .catch((error) => {
+        console.error('Error sending message:', error);
+        res.status(500).send('Error sending message');
+      });
+  });
+
+app.get('/notification/:token', function (req, res) {
     const { name } = req.params
     
     if(name == "dog"){
