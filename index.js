@@ -10,26 +10,21 @@ const admin = require('firebase-admin');
 
 connection.connect();
 
-// 선택, 수정, 삭제 쿼리별 분류해야 함
-// ex)
-// select/user
-// select/userjfacility 조인
-// update/patients 
-// delete/user
-
-app.get('/', function (req, res) {
-    res.send('homepage')
-})
-
 const select = require('./routes/select');
 app.use('/select', select);
+const insert = require('./routes/insert');
+app.use('/insert', insert);
+const remove = require('./routes/remove');
+app.use('/remove', remove);
 
-app.get('/select/facility', function (req, res) {
-    connection.query('SELECT * from facility', (error, rows) => {
-        if (error) throw error;
-        console.log('User info is: ', rows);
-        res.send(rows);
-    });
+
+
+app.get('/user', function (req, res) {
+    res.send('사용자')
+})
+
+app.get('/facility', function (req, res) {
+    res.send('시설')
 })
 
 app.get('/patients', function (req, res) {
@@ -113,4 +108,5 @@ app.get('/notification/:token', function (req, res) {
     }
     
 })
+
 app.listen(80)
