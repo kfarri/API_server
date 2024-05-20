@@ -1,11 +1,16 @@
 const express = require('express')
 var cors = require('cors')
 const app = express()
+const bodyParser = require('body-parser');
 const port = 80
 const mysql = require('mysql')
 const dbconfig   = require('./config/dbconf.js');
 const connection = mysql.createConnection(dbconfig);
 app.use(cors())
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
 const admin = require('firebase-admin');
 
 connection.connect();
@@ -24,49 +29,9 @@ app.get('/', function (req, res) {
 const select = require('./routes/select');
 app.use('/select', select);
 
-app.get('/select/facility', function (req, res) {
-    connection.query('SELECT * from facility', (error, rows) => {
-        if (error) throw error;
-        console.log('User info is: ', rows);
-        res.send(rows);
-    });
-})
+const insert = require('./routes/insert');
+app.use('/insert', insert);
 
-app.get('/patients', function (req, res) {
-    res.send('환자')
-})
-
-app.get('/emergency', function (req, res) {
-    res.send('응급상황')
-})
-
-app.get('/medicine', function (req, res) {
-    res.send('약')
-})
-
-app.get('/treatment', function (req, res) {
-    res.send('복용')
-})
-
-app.get('/robot', function (req, res) {
-    res.send('로봇')
-})
-
-app.get('/robotlog', function (req, res) {
-    res.send('로봇기록')
-})
-
-app.get('/map', function (req, res) {
-    res.send('지도')
-})
-
-app.get('/location', function (req, res) {
-    res.send('건물')
-})
-
-app.get('/itemlocation', function (req, res) {
-    res.send('_')
-})
 
 const serviceAccount = require('./config/carebot_Firebase_key.json');
 admin.initializeApp({
