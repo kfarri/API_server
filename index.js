@@ -33,6 +33,9 @@ app.use('/select', select);
 const insert = require('./routes/insert');
 app.use('/insert', insert);
 
+const update = require('./routes/update');
+app.use('/update', update);
+
 
 const serviceAccount = require('./config/carebot_Firebase_key.json');
 admin.initializeApp({

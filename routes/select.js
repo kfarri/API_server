@@ -5,24 +5,78 @@ const dbconfig   = require('../config/dbconf.js');
 const connection = mysql.createConnection(dbconfig);
 
 router.post('/login', (req, res) => {
-    const { email, password } = req.body;
+    const { id, password } = req.body;
+    console.log(req.body);
     const checkUserQuery = "SELECT * FROM user WHERE user_email = ? AND user_password = ?";
+    console.log(id, password)
     
-    connection.query(checkUserQuery, [email, password], (error, results) => {
+    connection.query(checkUserQuery, [id, password], (error, results) => {
         if (error) {
             console.error('Error querying database:', error);
-            return res.status(500).send('Internal Server Error');
+            return res.status(500).send('서버와의 연결이 불안정합니다.');
         }
 
+        console.log(results);
+
         if (results.length > 0) {
-            // 사용자 정보가 일치하는 경우
             res.status(200).send('Login successful');
         } else {
-            // 사용자 정보가 일치하지 않는 경우
-            res.status(401).send('Incorrect email or password');
+            res.status(401).send('이메일 또는 비밀번호가 틀렸습니다.');
+            console.log("err");
         }
     });
 });
+
+router.get('/robots', (req, res) => {
+    const { username } = req.query;
+    
+    if (!username) {
+        return res.status(400).json({ message: '유저가 없습니다' });
+    }
+    const getfa_id_query = 'SELECT fa_id FROM user WHERE user_email = ?';
+
+    connection.query(getfa_id_query, [username], (error, results) => {
+        if (error) {
+            return res.status(500).json({ message: '유저를 찾는 도중 오류가 났습니다', error });
+        }
+        if (results.length === 0) {
+            return res.status(404).json({ message: '유저를 찾을 수 없습니다' });
+        }
+
+        const facility_id = results[0].fa_id;
+        console.log(facility_id);
+
+        const query = 'SELECT * FROM robot WHERE fa_id = ?';
+
+        connection.query(query, [facility_id], (error, results) => {
+            if (error) {
+                return res.status(500).json({ message: '로봇을 찾는 도중 에러가 났습니다', error });
+            }
+            if (results.length === 0) {
+                return res.status(404).json({ message: '해당 유저가 소유한 로봇을 찾을 수 없습니다.' });
+            }
+            res.json(results);
+        });
+    });
+});
+
+router.post('/robotinfo', (req, res) => {
+    const {serial} = req.body;
+
+    const getRobotinfo = "SELECT * FROM robot WHERE ro_serial = ?";
+
+    connection.query(getRobotinfo, [serial], (error, results) => {
+        if (error) {
+            return res.status(500).json({ message: '유저를 찾는 도중 오류가 났습니다', error });
+        }
+        if (results.length === 0) {
+            return res.status(404).json({ message: '유저를 찾을 수 없습니다' });
+        }
+        console.log(results);
+        res.json(results);
+    })
+});
+
 
 
 router.get('/user', (req, res) => {
