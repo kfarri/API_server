@@ -4,6 +4,11 @@ const mysql = require('mysql')
 const dbconfig   = require('../config/dbconf.js');
 const connection = mysql.createConnection(dbconfig);
 
+function sleep(ms) {
+    const wakeUpTime = Date.now() + ms;
+    while (Date.now() < wakeUpTime) {}
+  }
+/* Login Query */ 
 router.post('/login', (req, res) => {
     const { id, password } = req.body;
     console.log(req.body);
@@ -27,8 +32,10 @@ router.post('/login', (req, res) => {
     });
 });
 
+/* GET Robot List Query */
 router.get('/robots', (req, res) => {
     const { username } = req.query;
+    console.log(username);
     
     if (!username) {
         return res.status(400).json({ message: '유저가 없습니다' });
@@ -53,7 +60,7 @@ router.get('/robots', (req, res) => {
                 return res.status(500).json({ message: '로봇을 찾는 도중 에러가 났습니다', error });
             }
             if (results.length === 0) {
-                return res.status(404).json({ message: '해당 유저가 소유한 로봇을 찾을 수 없습니다.' });
+                return res.status(404).json({ message: '소유한 로봇을 찾을 수 없습니다' });
             }
             res.json(results);
         });
@@ -88,6 +95,7 @@ router.get('/user', (req, res) => {
 })
 
 router.get('/facility', function (req, res) {
+    // sleep(5000);
     connection.query('SELECT * from facility', (error, rows) => {
         if (error) throw error;
         console.log('facility info is: ', rows);
