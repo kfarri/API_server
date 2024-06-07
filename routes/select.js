@@ -33,8 +33,8 @@ router.post('/login', (req, res) => {
 });
 
 /* GET Robot List Query */
-router.get('/robots', (req, res) => {
-    const { username } = req.query;
+router.post('/robots', (req, res) => {
+    const { username } = req.body;
     console.log(username);
     
     if (!username) {
@@ -84,25 +84,58 @@ router.post('/robotinfo', (req, res) => {
     })
 });
 
-
-
 router.get('/user', (req, res) => {
-    connection.query('SELECT * from user', (error, rows) => {
+    connection.query('SELECT * FROM user', (error, rows) => {
         if (error) throw error;
         console.log('User info is: ', rows);
         res.send(rows);
     });
 })
 
-router.get('/facility', function (req, res) {
+router.get('/facility', (req, res) => {
     // sleep(5000);
-    connection.query('SELECT * from facility', (error, rows) => {
+    connection.query('SELECT * FROM facility', (error, rows) => {
         if (error) throw error;
         console.log('facility info is: ', rows);
         res.send(rows);
     });
 })
 
+router.post('/facility-notifications', (req, res) => {
+    const { username } = req.body;
+    console.log(username);
+    
+    if (!username) {
+        return res.status(400).json({ message: '유저가 없습니다' });
+    }
+    const getfa_id_query = 'SELECT fa_id FROM user WHERE user_email = ?';
+
+    connection.query(getfa_id_query, [username], (error, results) => {
+        if (error) {
+            return res.status(500).json({ message: '유저를 찾는 도중 오류가 났습니다', error });
+        }
+        if (results.length === 0) {
+            return res.status(404).json({ message: '유저를 찾을 수 없습니다' });
+        }
+
+        const facility_id = results[0].fa_id;
+        console.log("알림:",facility_id);
+
+        const query = 'SELECT * FROM notification WHERE fa_id = ?';
+
+        connection.query(query, [facility_id], (error, results) => {
+            if (error) {
+                return res.status(500).json({ message: '알림을 찾는 도중 에러가 났습니다', error });
+            }
+            if (results.length === 0) {
+                return res.status(404).json({ message: '알림을 찾을 수 없습니다' });
+            }
+            console.log(results);
+            res.json(results);
+        });
+    });
+})
+2
 router.get('/select/patients', function (req, res) {
     connection.query('SELECT * from patients', (error, rows) => {
         if (error) throw error;
