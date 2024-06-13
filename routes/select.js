@@ -226,7 +226,7 @@ router.post('/web-login', (req, res) => {
         console.log(results);
 
         if (results.length > 0) {
-            res.status(200).send('Login successful');
+            res.status(200);
         } else {
             res.status(401).send('이메일 또는 비밀번호가 틀렸습니다.');
             console.log("err");
