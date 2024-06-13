@@ -217,7 +217,7 @@ router.post('/web-login', (req, res) => {
     const checkUserQuery = "SELECT * FROM admin WHERE ad_email = ? AND ad_password = ?";
     console.log(email, password)
     
-    connection.query(checkUserQuery, [id, password], (error, results) => {
+    connection.query(checkUserQuery, [email, password], (error, results) => {
         if (error) {
             console.error('Error querying database:', error);
             return res.status(500).send('서버와의 연결이 불안정합니다.');
