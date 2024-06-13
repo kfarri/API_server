@@ -212,10 +212,10 @@ router.get('/select/itemlocation', function (req, res) {
 /** ----------------------WEB client Access----------------------- */
 
 router.post('/web-login', (req, res) => {
-    const { id, password } = req.body;
+    const { email, password } = req.body;
     console.log(req.body);
     const checkUserQuery = "SELECT * FROM admin WHERE ad_email = ? AND ad_password = ?";
-    console.log(id, password)
+    console.log(email, password)
     
     connection.query(checkUserQuery, [id, password], (error, results) => {
         if (error) {
