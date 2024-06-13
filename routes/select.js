@@ -135,7 +135,7 @@ router.post('/facility-notifications', (req, res) => {
         });
     });
 })
-2
+
 router.get('/select/patients', function (req, res) {
     connection.query('SELECT * from patients', (error, rows) => {
         if (error) throw error;
@@ -205,6 +205,32 @@ router.get('/select/itemlocation', function (req, res) {
         if (error) throw error;
         console.log('itemlocation info is: ', rows);
         res.send(rows);
+    });
+})
+
+
+/** ----------------------WEB client Access----------------------- */
+
+router.post('/web-login', (req, res) => {
+    const { id, password } = req.body;
+    console.log(req.body);
+    const checkUserQuery = "SELECT * FROM admin WHERE ad_email = ? AND ad_password = ?";
+    console.log(id, password)
+    
+    connection.query(checkUserQuery, [id, password], (error, results) => {
+        if (error) {
+            console.error('Error querying database:', error);
+            return res.status(500).send('서버와의 연결이 불안정합니다.');
+        }
+
+        console.log(results);
+
+        if (results.length > 0) {
+            res.status(200).send('Login successful');
+        } else {
+            res.status(401).send('이메일 또는 비밀번호가 틀렸습니다.');
+            console.log("err");
+        }
     });
 })
 
