@@ -52,7 +52,7 @@ router.post('/web-signup', (req, res) => {
                     return res.status(500).send('Internal Server Error');
                 }
                 console.log('User info is: ', insertResult);
-                res.status(201);
+                res.status(200);
             });
         }
     });
