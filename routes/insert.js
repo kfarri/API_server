@@ -2,6 +2,7 @@ const router = require('express').Router();
 
 const mysql = require('mysql')
 const dbconfig   = require('../config/dbconf.js');
+const { messaging } = require('firebase-admin');
 const connection = mysql.createConnection(dbconfig);
 
 router.post('/signup', (req, res) => {
@@ -52,7 +53,7 @@ router.post('/web-signup', (req, res) => {
                     return res.status(500).send('Internal Server Error');
                 }
                 console.log('User info is: ', insertResult);
-                res.status(200);
+                res.status(200).json({ message : "회원가입 처리완료"});
             });
         }
     });
