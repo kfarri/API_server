@@ -35,7 +35,7 @@ router.post('/signup', (req, res) => {
 router.post('/web-signup', (req, res) => {
     const { email, password, name, phone } = req.body;
     const checkEmailQuery = "SELECT * FROM admin WHERE ad_email = ?";
-    const insertUserQuery = "INSERT INTO admin (ad_name, ad_email, ad_password, user_phone) VALUES (?, ?, ?, ?)";
+    const insertUserQuery = "INSERT INTO admin (ad_name, ad_email, ad_password, ad_phone) VALUES (?, ?, ?, ?)";
 
     connection.query(checkEmailQuery, [email], (checkError, checkResults) => {
         if (checkError) {
