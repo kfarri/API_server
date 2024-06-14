@@ -227,7 +227,7 @@ router.post('/web-login', (req, res) => {
 
         if (results.length > 0) {
             // 로그인 성공 시 사용자 이메일을 JSON으로 응답
-            res.status(200).json({ userEmail: results[0].ad_email });
+            res.status(200).json({ userEmail: results[0].ad_email, userName: results[0].ad_name });
         } else {
             res.status(401).send('이메일 또는 비밀번호가 틀렸습니다.');
             console.log("err");
