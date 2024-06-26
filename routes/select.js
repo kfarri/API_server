@@ -16,38 +16,34 @@ router.post("/login", (req, res) => {
     "SELECT * FROM user WHERE user_email = ? AND user_password = ?";
   const update_fcmtoken = "UPDATE user SET user_token = ? WHERE user_email = ?";
 
-  connection.query(
-    checkUserQuery,
-    [id, password],
-    (error, results) => {
-      if (error) {
-        console.error("Error querying database:", error);
-        return res.status(500).send("서버와의 연결이 불안정합니다.");
-      }
-
-      console.log(results);
-
-      if (results.length > 0) {
-        connection.query(
-          update_fcmtoken,
-          [fcm_token, id],
-          (error_fcm, results_fcm) => {
-            if (error_fcm) {
-              console.error("Error querying database - fcm : ", error_fcm);
-            }
-            
-            if (results_fcm > 0 ){
-                console.log("Succsess Update FCM_token")
-                res.status(200).send("Login successful");
-            }
-          }
-        );
-      } else {
-        res.status(401).send("이메일 또는 비밀번호가 틀렸습니다.");
-        console.log("err");
-      }
+  connection.query(checkUserQuery, [id, password], (error, results) => {
+    if (error) {
+      console.error("Error querying database:", error);
+      return res.status(500).send("서버와의 연결이 불안정합니다.");
     }
-  );
+
+    console.log(results);
+
+    if (results.length > 0) {
+      connection.query(
+        update_fcmtoken,
+        [fcm_token, id],
+        (error_fcm, results_fcm) => {
+          if (error_fcm) {
+            console.error("Error querying database - fcm : ", error_fcm);
+          }
+
+          if (results_fcm.length > 0) {
+            console.log("Succsess Update FCM_token");
+            res.status(200).send("Login successful");
+          }
+        }
+      );
+    } else {
+      res.status(401).send("이메일 또는 비밀번호가 틀렸습니다.");
+      console.log("err");
+    }
+  });
 });
 
 /* GET Robot List Query */
