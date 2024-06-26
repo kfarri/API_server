@@ -25,6 +25,7 @@ router.post("/login", (req, res) => {
     console.log(results);
 
     if (results.length > 0) {
+      res.status(200).send("Login successful");
       connection.query(
         update_fcmtoken,
         [fcm_token, id],
@@ -35,7 +36,6 @@ router.post("/login", (req, res) => {
 
           if (results_fcm.length > 0) {
             console.log("Succsess Update FCM_token");
-            res.status(200).send("Login successful");
           }
         }
       );
